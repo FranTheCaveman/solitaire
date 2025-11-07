@@ -1,5 +1,4 @@
 import styles from "./page.module.css";
-import Card from "solitaire/components/Card";
 import Board from "solitaire/components/Board";
 
 

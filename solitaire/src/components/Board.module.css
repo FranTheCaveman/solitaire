@@ -1,9 +1,59 @@
-.cardContainer {
+:root{
+  --card-height: 11.5rem;   /* actual card height */
+  --row-overlap: 10.5rem;    /* how much of card should overlap next row */
+  --grid-gap: 1rem;
+}
+
+.boardContainer {
   display: flex;
-  width: 1000px;
-  height: 700px;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  background: #04502A;
+  background: radial-gradient(circle, rgba(4, 80, 42, 1) 0%, rgba(3, 71, 31, 1) 50%, rgba(1, 43, 17, 1) 100%);
+  padding: 4rem;
+}
+
+.scoringContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 1rem;
-  background-color: #04502a;
+  flex: 1;
+  padding-bottom: 1.5rem;
+}
+
+.storageContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: right;
+}
+
+.blockButtonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.flowerContainer {
+  
+}
+
+.doneContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: left;
+}
+
+.cardContainer {
+  flex: 5;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  /* Make the row track smaller than the card to force overlap */
+  grid-auto-rows: calc(var(--card-height) - var(--row-overlap));
+  gap: var(--grid-gap);            /* use positive gap */
+  align-items: start;              /* ensure cards start at top of tracks */
+  justify-content: center;
+  overflow: visible;               /* allow overflow of card elements */
 }

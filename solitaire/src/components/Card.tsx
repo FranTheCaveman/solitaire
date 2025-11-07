@@ -2,16 +2,32 @@
 import React from "react";
 import styles from './Card.module.css'
 
-interface CardProps {
-    value: number;
-    suit?: string;
+export interface CardProps {
+    value?: number;
+    suit: string;
     colour: string;
+    isBlockCard: boolean;
+    isFlower?: boolean;
+    key?: string;
 }
 
-export default function Card({value, colour, suit}: CardProps) {
+const Card: React.FC<CardProps> = ({
+    value, 
+    colour, 
+    suit,
+    isBlockCard = false,
+    isFlower = false
+}) => {
+    const hideValue = (isBlockCard || isFlower || suit == "loading");
+    const isLoading = suit == "loading";
+    const loader = <span className={styles.loader}></span>;
+    const suitIcon = <span className={styles.suitIcon}>{suit}</span>
+
     return <div className={styles.card} style={{color: colour}} draggable="true">
-        <div className={styles.numberDiv1}>{value}</div>
-        <div className={styles.suitDiv}>{suit}</div>
-        <div className={styles.numberDiv2}>{value}</div>
+        <div className={styles.numberDiv1}>{hideValue ? "" : value}{isLoading ? "" : suitIcon}</div>
+        <div className={styles.suitDiv}>{isLoading ? loader : suitIcon}</div>
+        <div className={styles.numberDiv2}>{isLoading ? "" : suitIcon}{hideValue ? "" : value}</div>
     </div>
 }
+
+export default Card;
