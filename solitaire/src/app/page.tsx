@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import Board from "solitaire/components/Board";
+import Board from "solitaire/components/Game";
 
 
 export default function Home() {

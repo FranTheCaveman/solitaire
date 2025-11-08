@@ -46,7 +46,7 @@
   justify-content: left;
 }
 
-.cardContainer {
+.tableauContainer {
   flex: 5;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -54,10 +54,9 @@
   gap: var(--grid-gap);            /* use positive gap */
   align-items: start;              /* ensure cards start at top of tracks */
   justify-content: center;
-  
 }
 
-.cardColumn {
+.tableauColumn {
   display: grid;
   /* Make the row track smaller than the card to force overlap */
   grid-auto-rows: calc(var(--card-height) - var(--row-overlap));

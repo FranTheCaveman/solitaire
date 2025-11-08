@@ -1,11 +1,9 @@
 "use client"
-import styles from './Board.module.css'
-import Card, { CardProps } from "./Card";
-import { JSX, useEffect, useState } from 'react';
-import { blocks } from 'solitaire/data/cardDefinitions';
-import { generateBasePlayingCards, dealCardsIntoColumns } from 'solitaire/data/generateCards';
-import { getTableau, TableuProps } from 'solitaire/data/Tableu';
- 
+import styles from './Game.module.css'
+import Card from "./Card";
+import { useEffect, useState } from 'react';
+import { generateBasePlayingCards, generateRandomPlayingCards } from 'solitaire/data/generateCards';
+import { setStartingGameBoard, GameBoardProps } from 'solitaire/data/GameBoard';
 import Slot from './Slot';
 import {StackBlockCardsButtons} from './ButtonStackBlockCards';
 
@@ -18,21 +16,12 @@ interface BoardProps {
 }
 
 export default function Board() {
-    const placeholderTableu: TableuProps = {
-        columns: dealCardsIntoColumns(
-            generateBasePlayingCards().map(card => ({
-                ...card,
-                suit: "loading",
-                value: 0, 
-            }))),
-        freecells: [null, null, null],
-        foundations: [[], [], []]
-    };
+    const placeholderGameBoard: GameBoardProps = setStartingGameBoard(generateBasePlayingCards());
 
-    const [tableu, setTableu] = useState<TableuProps>(placeholderTableu);
+    const [gameBoard, setGameBoard] = useState<GameBoardProps>(placeholderGameBoard);
 
     useEffect(() => {
-        setTableu(getTableau());
+        setGameBoard(setStartingGameBoard(generateRandomPlayingCards()));
     }, [])
 
     return <>
@@ -56,11 +45,11 @@ export default function Board() {
                         <Slot variant="foundation" key="foundationSlot-3"/>
                     </div>
                 </div>
-                <div className={styles.cardContainer}>
+                <div className={styles.tableauContainer}>
                 { // cards
-                    tableu.columns.map((column, colIndex) => (
-                        <div className={styles.cardColumn} key={`column-${colIndex}`}>
-                            {column.map((card) => (
+                    gameBoard.tableau.map((tableauColumn, colIndex) => (
+                        <div className={styles.tableauColumn} key={`tableauColumn-${colIndex}`}>
+                            {tableauColumn.map((card) => (
                                 <Card key={card.key}
                                     value={card.value} 
                                     colour={card.draggable ? "yellow" : card.colour} // debug

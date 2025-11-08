@@ -69,20 +69,20 @@ export function generateRandomPlayingCards() {
 }
 
 export function dealCardsIntoColumns(cards: CardProps[], numColumns = 8) {
-    const columns: CardProps[][] = Array.from({ length: numColumns }, () => []);
+    const cardColumns: CardProps[][] = Array.from({ length: numColumns }, () => []);
 
-    // deal cards into 8 columns
+    // deal cards into 8 cardColumns
     cards.forEach((card: CardProps, index: number) => {
         const columnIndex = index % numColumns; 
-        columns[columnIndex].push({...card})
+        cardColumns[columnIndex].push({...card})
     })
     
     // mark bottom cards as draggable
-    columns.forEach(column => {
-        if (column.length > 0) {
-            column[column.length - 1].draggable = true;
+    cardColumns.forEach(cardColumn => {
+        if (cardColumn.length > 0) {
+            cardColumn[cardColumn.length - 1].draggable = true;
         }
     });
 
-    return columns;
+    return cardColumns;
 }
