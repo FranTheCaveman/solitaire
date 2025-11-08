@@ -1,70 +1,79 @@
 "use client"
 import styles from './Board.module.css'
 import Card, { CardProps } from "./Card";
-import { generateRandomPlayingCards } from "solitaire/utils/generateRandomCards";
 import { JSX, useEffect, useState } from 'react';
-import { blocks, generateBasePlayingCards, maxBlock } from 'solitaire/data/cardDefinitions';
+import { blocks } from 'solitaire/data/cardDefinitions';
+import { generateBasePlayingCards, dealCardsIntoColumns } from 'solitaire/data/generateCards';
+import { getTableau, TableuProps } from 'solitaire/data/Tableu';
+ 
 import Slot from './Slot';
-import StackBlockCardsButton, {StackBlockCardsButtonProps} from './ButtonStackBlockCards';
+import {StackBlockCardsButtons} from './ButtonStackBlockCards';
 
-const MaxPlayingCardsHorizontal = 8;
+import { DndContext } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
+import { useDraggable } from '@dnd-kit/core';
 
 interface BoardProps {
     
 }
 
 export default function Board() {
-    // create stable placeholders from the deterministic base generator
-    const placeholderCards = generateBasePlayingCards().map(card => ({
-        ...card,
-        // hide face: empty suit + zero value so Card renders visually blank but keeps size/layout
-        suit: "loading",
-        value: 0,
-    }));
+    const placeholderTableu: TableuProps = {
+        columns: dealCardsIntoColumns(
+            generateBasePlayingCards().map(card => ({
+                ...card,
+                suit: "loading",
+                value: 0, 
+            }))),
+        freecells: [null, null, null],
+        foundations: [[], [], []]
+    };
 
-    const [cards, setCards] = useState<CardProps[]>(placeholderCards);
+    const [tableu, setTableu] = useState<TableuProps>(placeholderTableu);
 
     useEffect(() => {
-        setCards(generateRandomPlayingCards());
+        setTableu(getTableau());
     }, [])
 
-    const StackBlockCardsButtons: JSX.Element[] = [];
-    let blockBtnKey = 1;
-    blocks.forEach((card) => {
-        StackBlockCardsButtons.push(<StackBlockCardsButton key={"stackBlockButton-"+blockBtnKey} suit={card.suit}/>);
-        blockBtnKey++;
-    });
-
-    return <div className={styles.boardContainer}>
-        <div className={styles.scoringContainer}>
-            <div className={styles.storageContainer}>
-                <Slot variant="storage" key="storageSlot-1"/>
-                <Slot variant="storage" key="storageSlot-2"/>
-                <Slot variant="storage" key="storageSlot-3"/>
+    return <>
+        <DndContext>
+            <div className={styles.boardContainer}>
+                <div className={styles.scoringContainer}>
+                    <div className={styles.freecellContainer}>
+                        <Slot variant="freecell" key="freecellSlot-1"/>
+                        <Slot variant="freecell" key="freecellSlot-2"/>
+                        <Slot variant="freecell" key="freecellSlot-3"/>
+                    </div>
+                    <div className={styles.blockButtonContainer}>
+                        <StackBlockCardsButtons/>
+                    </div>
+                    <div className={styles.flowerContainer}>
+                        <Slot variant="flower" key="flowerSlot-1"/>
+                    </div>
+                    <div className={styles.foundationContainer}>
+                        <Slot variant="foundation" key="foundationSlot-1"/>
+                        <Slot variant="foundation" key="foundationSlot-2"/>
+                        <Slot variant="foundation" key="foundationSlot-3"/>
+                    </div>
+                </div>
+                <div className={styles.cardContainer}>
+                { // cards
+                    tableu.columns.map((column, colIndex) => (
+                        <div className={styles.cardColumn} key={`column-${colIndex}`}>
+                            {column.map((card) => (
+                                <Card key={card.key}
+                                    value={card.value} 
+                                    colour={card.draggable ? "yellow" : card.colour} // debug
+                                    suit={card.suit} 
+                                    isBlockCard={card.isBlockCard} 
+                                    isFlower={card.isFlower}
+                                    draggable={card.draggable}
+                                />
+                            ))}
+                        </div>
+                    ))}
+                </div>
             </div>
-            <div className={styles.blockButtonContainer}>
-                {StackBlockCardsButtons}
-            </div>
-            <div className={styles.flowerContainer}>
-                <Slot variant="flower" key="flowerSlot-1"/>
-            </div>
-            <div className={styles.doneContainer}>
-                <Slot variant="done" key="doneSlot-1"/>
-                <Slot variant="done" key="doneSlot-2"/>
-                <Slot variant="done" key="doneSlot-3"/>
-            </div>
-        </div>
-        <div className={styles.cardContainer}>
-            {
-                cards.map((card) => (
-                    <Card key={card.key}
-                        value={card.value} 
-                        colour={card.colour} 
-                        suit={card.suit} 
-                        isBlockCard={card.isBlockCard} 
-                        isFlower={card.isFlower}
-                    />
-            ))}
-        </div>
-    </div>
+        </DndContext>
+    </>
 }

@@ -1,6 +1,6 @@
 :root{
   --card-height: 11.5rem;   /* actual card height */
-  --row-overlap: 10.5rem;    /* how much of card should overlap next row */
+  --row-overlap: 9.5rem;    /* how much of card should overlap next row */
   --grid-gap: 1rem;
 }
 
@@ -21,7 +21,7 @@
   padding-bottom: 1.5rem;
 }
 
-.storageContainer {
+.freecellContainer {
   display: flex;
   flex-direction: row;
   gap: 1rem;
@@ -39,7 +39,7 @@
   
 }
 
-.doneContainer {
+.foundationContainer {
   display: flex;
   flex-direction: row;
   gap: 1rem;
@@ -50,10 +50,16 @@
   flex: 5;
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  /* Make the row track smaller than the card to force overlap */
-  grid-auto-rows: calc(var(--card-height) - var(--row-overlap));
+  
   gap: var(--grid-gap);            /* use positive gap */
   align-items: start;              /* ensure cards start at top of tracks */
   justify-content: center;
+  
+}
+
+.cardColumn {
+  display: grid;
+  /* Make the row track smaller than the card to force overlap */
+  grid-auto-rows: calc(var(--card-height) - var(--row-overlap));
   overflow: visible;               /* allow overflow of card elements */
 }

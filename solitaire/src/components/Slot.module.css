@@ -1,4 +1,4 @@
-.doneSlot {
+.foundationSlot {
     width: 6.5rem;
     height: 12rem;
     border-radius: 10px;
@@ -12,7 +12,7 @@
     -ms-user-select: none;     /* IE 10+ */
 }
 
-.storageSlot {
+.freecellSlot {
     width: 6.5rem;
     height: 12rem;
     border-radius: 10px;

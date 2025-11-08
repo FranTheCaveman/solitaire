@@ -9,6 +9,7 @@ export interface CardProps {
     isBlockCard: boolean;
     isFlower?: boolean;
     key?: string;
+    draggable: boolean;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -16,14 +17,15 @@ const Card: React.FC<CardProps> = ({
     colour, 
     suit,
     isBlockCard = false,
-    isFlower = false
+    isFlower = false,
+    draggable = false
 }) => {
     const hideValue = (isBlockCard || isFlower || suit == "loading");
     const isLoading = suit == "loading";
     const loader = <span className={styles.loader}></span>;
     const suitIcon = <span className={styles.suitIcon}>{suit}</span>
 
-    return <div className={styles.card} style={{color: colour}} draggable="true">
+    return <div className={styles.card} style={{color: colour}}>
         <div className={styles.numberDiv1}>{hideValue ? "" : value}{isLoading ? "" : suitIcon}</div>
         <div className={styles.suitDiv}>{isLoading ? loader : suitIcon}</div>
         <div className={styles.numberDiv2}>{isLoading ? "" : suitIcon}{hideValue ? "" : value}</div>
