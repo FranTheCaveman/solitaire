@@ -7,19 +7,20 @@ export function generateBasePlayingCards() {
     const playingCards: CardProps[] = [];
 
     // simple counter for stable ids
-    let idCounter = 1;
+    let idCounter = 0;
 
     // Add suits
     suits.forEach((card) => {
         for (let i = SUIT_START; i <= SUIT_END; i++) {
             playingCards.push({
-                key: `card-${idCounter++}`,
+                cardID: `card-${idCounter++}`,
                 value: i,
                 suit: card.suit,
                 colour: card.colour,
                 isBlockCard: false,
                 isFlower: false,
                 draggable: false,
+                dragging: false,
             });
         }
     });
@@ -28,26 +29,28 @@ export function generateBasePlayingCards() {
     blocks.forEach((card) => {
         for (let i = 0; i < MAX_BLOCK_CARDS; i++) {
             playingCards.push({
-                key: `card-${idCounter++}`,
+                cardID: `card-${idCounter++}`,
                 value: 0,
                 suit: card.suit,
                 colour: card.colour,
                 isBlockCard: true,
                 isFlower: false,
                 draggable: false,
+                dragging: false,
             });
         }
     });
 
     // add flower card
     playingCards.push({
-        key: `card-${idCounter++}`,
+        cardID: `card-${idCounter++}`,
         value: 0,
         suit: flower.suit,
         colour: flower.colour,
         isBlockCard: false,
         isFlower: true,
         draggable: false,
+        dragging: false,
     });
 
     return playingCards;

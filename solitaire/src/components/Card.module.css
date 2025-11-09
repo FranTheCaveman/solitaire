@@ -1,11 +1,11 @@
 .card {
+    display: flex;
     background-color: white;
     color: black;
     font-weight: 900;
     width: 6.5rem;
     height: 12rem;
     border-radius: 10px;
-    display: flex;
     flex-direction: column;
     padding: 0.5rem;
     background: #d3d9ce;
@@ -13,7 +13,7 @@
     border-top: 2px solid rgb(237, 241, 236);
     border-bottom: 2px solid rgb(185, 189, 175);
     box-shadow: 0 5px 5 -2px rgba(14, 14, 14, 0.548);
-
+    
     user-select: none;
     -webkit-user-select: none; /* Safari */
     -moz-user-select: none;    /* Firefox */
@@ -30,7 +30,7 @@
 }
 
 .suitDiv {
-    flex: 6;
+    flex: 5;
 
     display: flex;
     height: 100%;

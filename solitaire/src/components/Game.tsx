@@ -1,68 +1,116 @@
 "use client"
 import styles from './Game.module.css'
-import Card from "./Card";
+import Card, { CardProps } from "./Card";
 import { useEffect, useState } from 'react';
 import { generateBasePlayingCards, generateRandomPlayingCards } from 'solitaire/data/generateCards';
-import { setStartingGameBoard, GameBoardProps } from 'solitaire/data/GameBoard';
+import { setStartingGameBoard, GameBoardProps, moveCardToSlot } from 'solitaire/data/GameBoard';
 import Slot from './Slot';
 import {StackBlockCardsButtons} from './ButtonStackBlockCards';
-
-import { DndContext } from '@dnd-kit/core';
-import { useDroppable } from '@dnd-kit/core';
-import { useDraggable } from '@dnd-kit/core';
+import { restrictToWindowEdges } from '@dnd-kit/modifiers';
+import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 
 interface BoardProps {
     
 }
 
 export default function Board() {
-    const placeholderGameBoard: GameBoardProps = setStartingGameBoard(generateBasePlayingCards());
-
+    const placeholderGameBoard: GameBoardProps = setStartingGameBoard(
+      generateBasePlayingCards().map(card => ({
+        ...card,
+        suit: "loading",
+        value: 0,
+        draggable: false,
+        dragging: false,
+      }))
+    );
     const [gameBoard, setGameBoard] = useState<GameBoardProps>(placeholderGameBoard);
+    const [activeId, setActiveId] = useState<null | string>(null);
 
+    // initialise game board
     useEffect(() => {
         setGameBoard(setStartingGameBoard(generateRandomPlayingCards()));
     }, [])
 
+    function handleDragStart(event: DragStartEvent) { 
+        setActiveId(event.active.id.toString()); 
+    }
+
+    // handle drag end -- check if the card can be dropped in the slot
+    function handleDragEnd(e: DragEndEvent) {
+        const card: CardProps|undefined = e.active?.data?.current?.card;
+        if (card && e.over?.id?.toString().includes("Slot")) {
+            setGameBoard(prev => moveCardToSlot(prev, card.cardID, e.over!.id.toString()));
+        }
+        setActiveId(null);
+    }
+
     return <>
-        <DndContext>
-            <div className={styles.boardContainer}>
+        <div className={styles.boardContainer}>
+            <DndContext modifiers={[restrictToWindowEdges]} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                 <div className={styles.scoringContainer}>
                     <div className={styles.freecellContainer}>
-                        <Slot variant="freecell" key="freecellSlot-1"/>
-                        <Slot variant="freecell" key="freecellSlot-2"/>
-                        <Slot variant="freecell" key="freecellSlot-3"/>
+                    {
+                        gameBoard.freecells.map(slot => {
+                            const last = slot.cards[slot.cards.length - 1];
+                            return (
+                                <Slot key={slot.slotID} variant={slot.variant} slotID={slot.slotID}>
+                                    {last && <Card key={last.cardID} {...last} dragging={activeId === last.cardID} className={styles.filledSlotCard}/>}
+                                </Slot>
+                            );
+                        })
+                    }
                     </div>
+
                     <div className={styles.blockButtonContainer}>
                         <StackBlockCardsButtons/>
                     </div>
+
                     <div className={styles.flowerContainer}>
-                        <Slot variant="flower" key="flowerSlot-1"/>
+                    {
+                        gameBoard.flower.map(slot => {
+                            const last = slot.cards[slot.cards.length - 1];
+                            return (
+                                <div key={slot.slotID} className={styles.filledSlot}>
+                                <Slot variant={slot.variant} slotID={slot.slotID} />
+                                {last && (
+                                    <Card
+                                    key={last.cardID}
+                                    {...last}
+                                    dragging={activeId === last.cardID}
+                                    className={styles.filledSlotCard}
+                                    />
+                                )}
+                                </div>
+                            );
+                        })
+                    }
                     </div>
+
                     <div className={styles.foundationContainer}>
-                        <Slot variant="foundation" key="foundationSlot-1"/>
-                        <Slot variant="foundation" key="foundationSlot-2"/>
-                        <Slot variant="foundation" key="foundationSlot-3"/>
+                    {
+                        gameBoard.foundations.map(slot => {
+                            const last = slot.cards[slot.cards.length - 1];
+                            return (
+                                <Slot key={slot.slotID} variant={slot.variant} slotID={slot.slotID}>
+                                    {last && <Card key={last.cardID} {...last} dragging={activeId === last.cardID} className={styles.filledSlotCard}/>}
+                                </Slot>
+                            );
+                        })
+                    }
                     </div>
                 </div>
+
                 <div className={styles.tableauContainer}>
                 { // cards
                     gameBoard.tableau.map((tableauColumn, colIndex) => (
                         <div className={styles.tableauColumn} key={`tableauColumn-${colIndex}`}>
                             {tableauColumn.map((card) => (
-                                <Card key={card.key}
-                                    value={card.value} 
-                                    colour={card.draggable ? "yellow" : card.colour} // debug
-                                    suit={card.suit} 
-                                    isBlockCard={card.isBlockCard} 
-                                    isFlower={card.isFlower}
-                                    draggable={card.draggable}
-                                />
+                                <Card {...card} key={card.cardID} colour={card.draggable ? "yellow" : card.colour}/>
                             ))}
                         </div>
                     ))}
                 </div>
-            </div>
-        </DndContext>
+            </DndContext>
+        </div>
     </>
 }

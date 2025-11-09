@@ -4,7 +4,7 @@ import type { CardProps } from "solitaire/components/Card";
 // constants
 export const SUIT_START: number = 1; // inclusive
 export const SUIT_END: number = 9; // inclusive
-export const MAX_BLOCK_CARDS: number = 4;
+export const MAX_BLOCK_CARDS: number = 4; // inclusive
 
 // Defining suits
 export const suits: SuitDef[] = [

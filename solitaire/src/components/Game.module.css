@@ -5,6 +5,7 @@
 }
 
 .boardContainer {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: #04502A;
@@ -61,4 +62,25 @@
   /* Make the row track smaller than the card to force overlap */
   grid-auto-rows: calc(var(--card-height) - var(--row-overlap));
   overflow: visible;               /* allow overflow of card elements */
+}
+
+.filledSlot {
+  position: relative;         /* containing block for the overlaid card */
+  display: inline-block;      /* keep normal layout */
+  vertical-align: top;
+  overflow: visible;
+
+  /* match the Slot size so centering is predictable */
+  width: 6.5rem;
+  height: 12rem;
+  box-sizing: border-box;
+}
+
+.filledSlotCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 9999;
+  /* pointer-events: none;  // disables dragging and dropping */
+  transform: translate(-50%, -50%);
 }

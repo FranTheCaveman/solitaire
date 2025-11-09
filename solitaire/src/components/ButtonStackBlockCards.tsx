@@ -19,7 +19,7 @@ export function StackBlockCardsButtons() {
   return (
     <>
       {blocks.map((card, index) => (
-        <StackBlockCardsButton key={"stackBlockButton-" + (index + 1)} suit={card.suit} />
+        <StackBlockCardsButton key={"stackBlockButton-" + index} suit={card.suit} />
       ))}
     </>
   )
